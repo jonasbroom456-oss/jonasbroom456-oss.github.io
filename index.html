@@ -1,0 +1,18 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head><title>Homework Bot</title></head>
+<body>
+  <h1>Ask Your Homework Bot</h1>
+  <form method="post">
+    <select name="subject">
+      <option value="math">Math</option>
+      <option value="english">English</option>
+      <option value="science">Science</option>
+    </select>
+    <input type="text" name="query" placeholder="Enter your question" required>
+    <button type="submit">Submit</button>
+  </form>
+  <p><strong>Answer:</strong> {{ answer }}</p>
+</body>
+</html>
