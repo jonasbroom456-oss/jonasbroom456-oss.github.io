@@ -5,16 +5,23 @@
   <title>Homework Companion</title>
   <script type="module" src="app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+<style>
+#menuBtn.menu-open span:nth-child(1){transform:translateY(8px) rotate(45deg);}
+#menuBtn.menu-open span:nth-child(2){opacity:0;}
+#menuBtn.menu-open span:nth-child(3){transform:translateY(-8px) rotate(-45deg);}
+#menuBtn span{transition:0.3s ease;}
+</style>
 </head>
 <body class="bg-white h-screen flex flex-col select-none">
+  <!-- Hamburger Button -->
   <button id="menuBtn" class="p-4 flex flex-col gap-1 fixed top-0 left-0 z-50">
     <span class="w-8 h-1 bg-black transition-all"></span>
     <span class="w-8 h-1 bg-black transition-all"></span>
     <span class="w-8 h-1 bg-black transition-all"></span>
-  </button>   <div id="sideMenu" class="fixed left-0 top-0 h-full w-56 bg-gray-800 text-white p-6 -translate-x-full transition-transform duration-300 flex flex-col gap-4">
+  </button>  <!-- Sidebar Menu -->  <div id="sideMenu" class="fixed left-0 top-0 h-full w-56 bg-gray-800 text-white p-6 -translate-x-full transition-transform duration-300 flex flex-col gap-4">
     <button class="subjectBtn bg-blue-500 p-2 rounded" data-subject="math">Maths</button>
     <button class="subjectBtn bg-green-500 p-2 rounded" data-subject="formulas">Formulas</button>
-  </div>  <div class="flex flex-col items-center justify-center flex-grow p-6 text-center" id="mainArea">
+  </div>  <!-- Main Content -->  <div class="flex flex-col items-center justify-center flex-grow p-6 text-center" id="mainArea">
     <h1 id="title" class="text-3xl font-semibold mb-6">Choose a Subject</h1>
     <div class="flex gap-2 w-full max-w-xl justify-center">
       <input id="queryInput" class="border border-gray-400 p-2 rounded w-full" placeholder="Enter your question..." />
@@ -22,10 +29,13 @@
     </div>
     <pre id="output" class="mt-6 whitespace-pre-wrap text-left max-w-xl"></pre>
   </div><script type="module">
+// Toggle menu
 const menuBtn = document.getElementById('menuBtn');
 const sideMenu = document.getElementById('sideMenu');
 menuBtn.addEventListener('click', () => {
+  menuBtn.classList.toggle('menu-open');
   sideMenu.classList.toggle('-translate-x-full');
+});
 });
 
   import { runQuery } from './app.js';
@@ -39,11 +49,20 @@ menuBtn.addEventListener('click', () => {
 
   let currentSubject = null;
 
+  // Hamburger Slide Animation
   menuBtn.onclick = () => {
     sideMenu.classList.toggle('-translate-x-full');
   };
 
-  document.querySelectorAll('.subjectBtn').forEach(btn => {
+  // Subject Selection
+  document.querySelectorAll('.subjectBtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const subject = btn.dataset.subject;
+    title.textContent = subject === "math" ? "Maths Homework Companion" : "Formulas Homework Companion";
+    menuBtn.classList.remove('menu-open');
+    sideMenu.classList.add('-translate-x-full');
+  });
+});.forEach(btn => {
     btn.onclick = () => {
       currentSubject = btn.dataset.subject;
       title.textContent = currentSubject === 'math' ? 'Maths Homework Companion' : 'Formulas Homework Companion';
@@ -51,6 +70,7 @@ menuBtn.addEventListener('click', () => {
     };
   });
 
+  // Submit Query
   submitBtn.onclick = () => {
     if (!currentSubject) {
       output.textContent = 'Please choose Maths or Formulas first.';
