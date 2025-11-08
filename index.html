@@ -11,7 +11,7 @@
     <span class="w-8 h-1 bg-black transition-all"></span>
     <span class="w-8 h-1 bg-black transition-all"></span>
     <span class="w-8 h-1 bg-black transition-all"></span>
-  </button> <div id="sideMenu" class="fixed left-0 top-0 h-full w-56 bg-gray-800 text-white p-6 -translate-x-full transition-transform duration-300 flex flex-col gap-4">
+  </button>   <div id="sideMenu" class="fixed left-0 top-0 h-full w-56 bg-gray-800 text-white p-6 -translate-x-full transition-transform duration-300 flex flex-col gap-4">
     <button class="subjectBtn bg-blue-500 p-2 rounded" data-subject="math">Maths</button>
     <button class="subjectBtn bg-green-500 p-2 rounded" data-subject="formulas">Formulas</button>
   </div>  <div class="flex flex-col items-center justify-center flex-grow p-6 text-center" id="mainArea">
@@ -22,6 +22,12 @@
     </div>
     <pre id="output" class="mt-6 whitespace-pre-wrap text-left max-w-xl"></pre>
   </div><script type="module">
+const menuBtn = document.getElementById('menuBtn');
+const sideMenu = document.getElementById('sideMenu');
+menuBtn.addEventListener('click', () => {
+  sideMenu.classList.toggle('-translate-x-full');
+});
+
   import { runQuery } from './app.js';
 
   const menuBtn = document.getElementById('menuBtn');
