@@ -3,16 +3,19 @@
 <html>
 <head><title>Homework Bot</title></head>
 <body>
-  <h1>Ask Your Homework Bot</h1>
+  <h1>Homework Helper</h1>
   <form method="post">
-    <select name="subject">
-      <option value="math">Maths</option>
-      <option value="english">English</option>
-      <option value="science">Science</option>
+    <select name="subject" required>
+      <option value="math">Math</option>
+      <option value="formulas">Formulas</option>
+      <option value="english">English Words</option>
     </select>
     <input type="text" name="query" placeholder="Enter your question" required>
     <button type="submit">Submit</button>
   </form>
-  <p><strong>Answer:</strong> {{ answer }}</p>
+  {% if answer %}
+  <p><strong>Answer:</strong></p>
+  <pre>{{answer}}</pre>
+  {% endif %}
 </body>
 </html>
