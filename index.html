@@ -3,19 +3,9 @@
 <html>
 <head><title>Homework Bot</title></head>
 <body>
-  <h1>Homework Helper</h1>
+  <h1>Homework Companion</h1>
   <form method="post">
-    <select name="subject" required>
-      <option value="math">Math</option>
-      <option value="formulas">Formulas</option>
-      <option value="english">English Words</option>
-    </select>
-    <input type="text" name="query" placeholder="Enter your question" required>
-    <button type="submit">Submit</button>
+    <button type="button">Get Started</button>
   </form>
-  {% if answer %}
-  <p><strong>Answer:</strong></p>
-  <pre>{{answer}}</pre>
-  {% endif %}
 </body>
 </html>
