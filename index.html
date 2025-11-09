@@ -36,51 +36,53 @@
     <pre id="output" class="mt-6 whitespace-pre-wrap text-left max-w-xl"></pre>
   </div>
 
-  <script>
-    // Temporary placeholder for testing
-    function runQuery(subject, query) {
-      return `You asked "${query}" in ${subject}.`;
+  <script type="module">
+  import { runQuery } from './app.js';
+
+  const menuBtn = document.getElementById('menuBtn');
+  const sideMenu = document.getElementById('sideMenu');
+  const title = document.getElementById('title');
+  const queryInput = document.getElementById('queryInput');
+  const submitBtn = document.getElementById('submitBtn');
+  const output = document.getElementById('output');
+  let currentSubject = null;
+
+  menuBtn.addEventListener('click', () => {
+    menuBtn.classList.toggle('menu-open');
+    sideMenu.classList.toggle('-translate-x-full');
+  });
+
+  document.querySelectorAll('.subjectBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentSubject = btn.dataset.subject;
+      title.textContent =
+        currentSubject === 'math'
+          ? 'Maths Homework Companion'
+          : currentSubject === 'formulas'
+          ? 'Formulas Homework Companion'
+          : 'English Homework Companion';
+      menuBtn.classList.remove('menu-open');
+      sideMenu.classList.add('-translate-x-full');
+    });
+  });
+
+  submitBtn.addEventListener('click', async () => {
+    if (!currentSubject) {
+      output.textContent = 'Please choose Maths, English, or Formulas first.';
+      return;
     }
+    const query = queryInput.value.trim();
+    if (!query) {
+      output.textContent = 'Please type a question first.';
+      return;
+    }
+    const result = await runQuery(currentSubject, query);
+    output.textContent = result;
+  });
 
-    const menuBtn = document.getElementById('menuBtn');
-    const sideMenu = document.getElementById('sideMenu');
-    const title = document.getElementById('title');
-    const queryInput = document.getElementById('queryInput');
-    const submitBtn = document.getElementById('submitBtn');
-    const output = document.getElementById('output');
-    let currentSubject = null;
-
-    menuBtn.addEventListener('click', () => {
-      menuBtn.classList.toggle('menu-open');
-      sideMenu.classList.toggle('-translate-x-full');
-    });
-
-    document.querySelectorAll('.subjectBtn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentSubject = btn.dataset.subject;
-        title.textContent =
-          currentSubject === 'math'
-            ? 'Maths Homework Companion'
-            : currentSubject === 'formulas'
-            ? 'Formulas Homework Companion'
-            : 'English Homework Companion';
-        menuBtn.classList.remove('menu-open');
-        sideMenu.classList.add('-translate-x-full');
-      });
-    });
-
-    submitBtn.addEventListener('click', () => {
-      if (!currentSubject) {
-        output.textContent = 'Please choose Maths, English, or Formulas first.';
-        return;
-      }
-      const result = runQuery(currentSubject, queryInput.value);
-      output.textContent = result;
-    });
-
-    queryInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') submitBtn.click();
-    });
+  queryInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitBtn.click();
+  });
   </script>
 </body>
 </html>
