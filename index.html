@@ -12,9 +12,7 @@
     #menuBtn span{transition:0.3s ease;}
   </style>
 </head>
-
 <body class="bg-white h-screen flex flex-col select-none">
-
   <button id="menuBtn" class="p-4 flex flex-col gap-1 fixed top-0 left-0 z-50">
     <span class="w-8 h-1 bg-black transition-all"></span>
     <span class="w-8 h-1 bg-black transition-all"></span>
@@ -36,53 +34,6 @@
     <pre id="output" class="mt-6 whitespace-pre-wrap text-left max-w-xl"></pre>
   </div>
 
-  <script>
-  import { runQuery } from './app.js';
-
-  const menuBtn = document.getElementById('menuBtn');
-  const sideMenu = document.getElementById('sideMenu');
-  const title = document.getElementById('title');
-  const queryInput = document.getElementById('queryInput');
-  const submitBtn = document.getElementById('submitBtn');
-  const output = document.getElementById('output');
-  let currentSubject = null;
-
-  menuBtn.addEventListener('click', () => {
-    menuBtn.classList.toggle('menu-open');
-    sideMenu.classList.toggle('-translate-x-full');
-  });
-
-  document.querySelectorAll('.subjectBtn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentSubject = btn.dataset.subject;
-      title.textContent =
-        currentSubject === 'math'
-          ? 'Maths Homework Companion'
-          : currentSubject === 'formulas'
-          ? 'Formulas Homework Companion'
-          : 'English Homework Companion';
-      menuBtn.classList.remove('menu-open');
-      sideMenu.classList.add('-translate-x-full');
-    });
-  });
-
-  submitBtn.addEventListener('click', async () => {
-    if (!currentSubject) {
-      output.textContent = 'Please choose Maths, English, or Formulas first.';
-      return;
-    }
-    const query = queryInput.value.trim();
-    if (!query) {
-      output.textContent = 'Please type a question first.';
-      return;
-    }
-    const result = await runQuery(currentSubject, query);
-    output.textContent = result;
-  });
-
-  queryInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') submitBtn.click();
-  });
-  </script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
