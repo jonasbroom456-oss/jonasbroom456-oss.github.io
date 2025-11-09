@@ -8,6 +8,7 @@ const title = document.getElementById('title');
 const queryInput = document.getElementById('queryInput');
 const submitBtn = document.getElementById('submitBtn');
 const output = document.getElementById('output');
+
 let currentSubject = null;
 
 menuBtn.addEventListener('click', () => {
@@ -29,16 +30,18 @@ document.querySelectorAll('.subjectBtn').forEach(btn => {
   });
 });
 
-submitBtn.addEventListener('click', async () => {
+submitBtn.addEventListener('click', () => {
   if (!currentSubject) {
     output.textContent = 'Please choose Maths, English, or Formulas first.';
     return;
   }
+
   const query = queryInput.value.trim();
   if (!query) {
     output.textContent = 'Please type a question first.';
     return;
   }
+
   const result = runQuery(currentSubject, query);
   output.textContent = result;
 });
@@ -50,15 +53,20 @@ queryInput.addEventListener('keydown', e => {
 function runQuery(subject, query) {
   if (subject === "formulas") {
     const matches = findFormula(query);
-    return matches.length
-      ? matches.map(f => `${f.name}: ${f.latex} — ${f.description}`).join("\n")
-      : "No matching formulas found.";
+    return Array.isArray(matches)
+      ? (matches.length
+          ? matches.map(f => `${f.name}: ${f.latex} — ${f.description}`).join("\n")
+          : "No matching formulas found.")
+      : matches;
   }
+
   if (subject === "math") {
     return evaluateExpression(query);
   }
+
   if (subject === "english") {
     return processEnglish(query);
   }
+
   return "Unknown subject.";
 }
