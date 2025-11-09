@@ -12,24 +12,19 @@
     #menuBtn span{transition:0.3s ease;}
   </style>
 </head>
-
 <body class="bg-white h-screen flex flex-col select-none">
-
-  <!-- Hamburger Button -->
   <button id="menuBtn" class="p-4 flex flex-col gap-1 fixed top-0 left-0 z-50">
     <span class="w-8 h-1 bg-black transition-all"></span>
     <span class="w-8 h-1 bg-black transition-all"></span>
     <span class="w-8 h-1 bg-black transition-all"></span>
   </button>
 
-  <!-- Sidebar Menu -->
   <div id="sideMenu" class="fixed left-0 top-0 h-full w-56 bg-gray-800 text-white p-6 -translate-x-full transition-transform duration-300 flex flex-col gap-4">
     <button class="subjectBtn bg-yellow-500 p-2 rounded" data-subject="math">Maths</button>
     <button class="subjectBtn bg-purple-500 p-2 rounded" data-subject="formulas">Formulas</button>
     <button class="subjectBtn bg-blue-500 p-2 rounded" data-subject="english">English</button>
   </div>
 
-  <!-- Main Content -->
   <div class="flex flex-col items-center justify-center flex-grow p-6 text-center" id="mainArea">
     <h1 id="title" class="text-3xl font-semibold mb-6">Choose a Subject</h1>
     <div class="flex gap-2 w-full max-w-xl justify-center">
@@ -51,13 +46,11 @@
 
     let currentSubject = null;
 
-    // Toggle menu open/close + animate hamburger
     menuBtn.addEventListener('click', () => {
       menuBtn.classList.toggle('menu-open');
       sideMenu.classList.toggle('-translate-x-full');
     });
 
-    // Subject selection
     document.querySelectorAll('.subjectBtn').forEach(btn => {
       btn.addEventListener('click', () => {
         currentSubject = btn.dataset.subject;
@@ -66,14 +59,12 @@
             ? 'Maths Homework Companion'
             : currentSubject === 'formulas'
             ? 'Formulas Homework Companion'
-            : currentSubject === 'english'
-            ? 'English Homework Companion';
+            : 'English Homework Companion';
         menuBtn.classList.remove('menu-open');
         sideMenu.classList.add('-translate-x-full');
       });
     });
 
-    // Submit query
     submitBtn.addEventListener('click', () => {
       if (!currentSubject) {
         output.textContent = 'Please choose Maths, English, or Formulas first.';
@@ -83,7 +74,6 @@
       output.textContent = result;
     });
 
-    // Allow pressing Enter to submit
     queryInput.addEventListener('keydown', e => {
       if (e.key === 'Enter') submitBtn.click();
     });
