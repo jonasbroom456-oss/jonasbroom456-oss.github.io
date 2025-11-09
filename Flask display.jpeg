@@ -1,0 +1,1 @@
+docker run -it -p 0.0.0.0:6006:5000/tcp -v /home/piyush/Pictures:/imgdir:ro piyush01123/flaskig python app.py /imgdir -l 0.0.0.0 -p 5000
