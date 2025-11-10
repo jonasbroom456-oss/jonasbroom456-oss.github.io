@@ -2,6 +2,8 @@ import { findFormula } from "./formulas.js";
 import { evaluateExpression } from "./maths.js";
 import { processEnglish } from "./english.js";
 
+console.log("✅ app.js loaded successfully");
+
 const menuBtn = document.getElementById('menuBtn');
 const sideMenu = document.getElementById('sideMenu');
 const title = document.getElementById('title');
@@ -14,6 +16,7 @@ let currentSubject = null;
 menuBtn.addEventListener('click', () => {
   menuBtn.classList.toggle('menu-open');
   sideMenu.classList.toggle('-translate-x-full');
+  console.log("menu toggled");
 });
 
 document.querySelectorAll('.subjectBtn').forEach(btn => {
@@ -27,6 +30,7 @@ document.querySelectorAll('.subjectBtn').forEach(btn => {
         : 'English Homework Companion';
     menuBtn.classList.remove('menu-open');
     sideMenu.classList.add('-translate-x-full');
+    console.log(`subject selected: ${currentSubject}`);
   });
 });
 
@@ -44,6 +48,7 @@ submitBtn.addEventListener('click', () => {
 
   const result = runQuery(currentSubject, query);
   output.textContent = result;
+  console.log(`query submitted: ${query}`);
 });
 
 queryInput.addEventListener('keydown', e => {
@@ -59,14 +64,7 @@ function runQuery(subject, query) {
           : "No matching formulas found.")
       : matches;
   }
-
-  if (subject === "math") {
-    return evaluateExpression(query);
-  }
-
-  if (subject === "english") {
-    return processEnglish(query);
-  }
-
+  if (subject === "math") return evaluateExpression(query);
+  if (subject === "english") return processEnglish(query);
   return "Unknown subject.";
 }
