@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,60 +15,125 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-    }.quiz-container {
-  background: #1b263b;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  width: 400px;
-  text-align: center;
-}
+    }
 
-h1 {
-  margin-bottom: 20px;
-}
+    .quiz-container {
+      background: #1b263b;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      width: 400px;
+      text-align: center;
+      position: relative;
+    }
 
-select, button {
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  margin-top: 10px;
-  font-size: 16px;
-}
+    h1 {
+      margin-bottom: 20px;
+    }
 
-button {
-  background: #00b4d8;
-  color: white;
-  cursor: pointer;
-}
+    select, button {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
 
-button:hover {
-  background: #0096c7;
-}
+    button {
+      background: #00b4d8;
+      color: white;
+      cursor: pointer;
+    }
 
-.question {
-  margin: 20px 0;
-}
+    button:hover {
+      background: #0096c7;
+    }
 
-input[type="number"] {
-  padding: 8px;
-  font-size: 16px;
-  width: 100px;
-  text-align: center;
-  border-radius: 6px;
-  border: none;
-}
+    .question {
+      margin: 20px 0;
+    }
 
-.timer {
-  font-weight: bold;
-  color: #ffb703;
-  margin-top: 10px;
-}
+    input[type="number"] {
+      padding: 8px;
+      font-size: 16px;
+      width: 100px;
+      text-align: center;
+      border-radius: 6px;
+      border: none;
+    }
 
+    .timer {
+      font-weight: bold;
+      color: #ffb703;
+      margin-top: 10px;
+    }
+
+    /* Gear icon */
+    .gear {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    /* Settings modal */
+    .settings {
+      display: none;
+      position: absolute;
+      top: 40px;
+      right: 10px;
+      background: #24344f;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: left;
+      width: 200px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .settings label {
+      display: block;
+      margin-top: 8px;
+    }
+
+    .settings select, .settings input {
+      width: 100%;
+      margin-top: 5px;
+      border-radius: 6px;
+      padding: 6px;
+      border: none;
+    }
+
+    .settings input[type="checkbox"] {
+      width: auto;
+    }
+
+    .settings button {
+      background: #00b4d8;
+      margin-top: 10px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
   <div class="quiz-container">
+    <span class="gear" onclick="toggleSettings()">⚙️</span>
+
+    <div class="settings" id="settings">
+      <label for="timeSelect">Time limit:</label>
+      <select id="timeSelect">
+        <option value="120">2 minutes</option>
+        <option value="90">1 minutes 30s</option>
+        <option value="60">1 minute</option>
+        <option value="30">30 seconds</option>
+        <option value="20">20 seconds</option>
+        <option value="10">10 seconds</option>
+      </select>
+
+      <label><input type="checkbox" id="decimalToggle"> Include decimals</label>
+      <button onclick="saveSettings()">Save</button>
+    </div>
+
     <h1>Math Quiz</h1>
     <div id="setup">
       <label for="level">Choose your year level:</label><br>
@@ -85,99 +151,117 @@ input[type="number"] {
         <option value="11">Year 11</option>
       </select><br>
       <button onclick="startQuiz()">Start Quiz</button>
-    </div><div id="quiz" style="display:none;">
-  <div class="timer">Time left: <span id="time">30</span>s</div>
-  <div class="question" id="question"></div>
-  <input type="number" id="answer" placeholder="Your answer" />
-  <br>
-  <button onclick="submitAnswer()">Submit</button>
-</div>
+    </div>
 
-<div id="result" style="display:none;"></div>
+    <div id="quiz" style="display:none;">
+      <div class="timer">Time left: <span id="time">30</span>s</div>
+      <div class="question" id="question"></div>
+      <input type="number" id="answer" placeholder="Your answer" />
+      <br>
+      <button onclick="submitAnswer()">Submit</button>
+    </div>
 
-  </div>  <script>
-  let level, num1, num2, correctAnswer, score = 0, totalQuestions = 5, questionCount = 0, timer;
-  let timeLeft = 30;
+    <div id="result" style="display:none;"></div>
+  </div>
 
-  function startQuiz() {
-    level = parseInt(document.getElementById('level').value);
-    document.getElementById('setup').style.display = 'none';
-    document.getElementById('quiz').style.display = 'block';
-    score = 0;
-    questionCount = 0;
-    timeLeft = 30;
-    document.getElementById('time').textContent = timeLeft;
-    timer = setInterval(updateTimer, 1000);
-    generateQuestion();
+  <script>
+    let level, num1, num2, correctAnswer, score = 0, totalQuestions = 5, questionCount = 0, timer;
+    let timeLeft = 30;
+    let allowDecimals = false;
 
-    // Let pressing Enter submit answers
-    document.getElementById('answer').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') submitAnswer();
-    });
-  }
+    function toggleSettings() {
+      const settings = document.getElementById('settings');
+      settings.style.display = settings.style.display === 'block' ? 'none' : 'block';
+    }
 
-  function updateTimer() {
-    timeLeft--;
-    document.getElementById('time').textContent = timeLeft;
-    if (timeLeft <= 0) {
+    function saveSettings() {
+      const selectedTime = parseInt(document.getElementById('timeSelect').value);
+      timeLeft = selectedTime;
+      allowDecimals = document.getElementById('decimalToggle').checked;
+      toggleSettings();
+    }
+
+    function startQuiz() {
+      level = parseInt(document.getElementById('level').value);
+      document.getElementById('setup').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
+      score = 0;
+      questionCount = 0;
+      document.getElementById('time').textContent = timeLeft;
+      timer = setInterval(updateTimer, 1000);
+      generateQuestion();
+
+      // allow Enter key to submit
+      document.getElementById('answer').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') submitAnswer();
+      });
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      document.getElementById('time').textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        endQuiz();
+      }
+    }
+
+    function generateQuestion() {
+      questionCount++;
+      if (questionCount > totalQuestions) {
+        endQuiz();
+        return;
+      }
+
+      let maxNum = level * 10;
+      num1 = Math.floor(Math.random() * maxNum) + 1;
+      num2 = Math.floor(Math.random() * maxNum) + 1;
+
+      const operations = ['+', '-'];
+      if (level >= 4) operations.push('*');
+      if (level >= 6) operations.push('/');
+
+      const op = operations[Math.floor(Math.random() * operations.length)];
+
+      switch (op) {
+        case '+':
+          correctAnswer = num1 + num2;
+          break;
+        case '-':
+          if (num2 > num1) [num1, num2] = [num2, num1]; // prevent negatives
+          correctAnswer = num1 - num2;
+          break;
+        case '*':
+          correctAnswer = num1 * num2;
+          break;
+        case '/':
+          correctAnswer = num1 / num2;
+          if (allowDecimals) correctAnswer = parseFloat(correctAnswer.toFixed(2));
+          else correctAnswer = Math.round(correctAnswer);
+          break;
+      }
+
+      document.getElementById('question').textContent =
+        `Question ${questionCount}: ${num1} ${op} ${num2} = ?`;
+      document.getElementById('answer').value = '';
+      document.getElementById('answer').focus();
+    }
+
+    function submitAnswer() {
+      const userAnswer = parseFloat(document.getElementById('answer').value);
+      if (isNaN(userAnswer)) return alert('Please enter a number.');
+      if (Math.abs(userAnswer - correctAnswer) < 0.01) score++;
+      generateQuestion();
+    }
+
+    function endQuiz() {
       clearInterval(timer);
-      endQuiz();
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('result').innerHTML =
+        `<h2>Quiz Over!</h2><p>Your score: ${score}/${totalQuestions}</p>
+         <button onclick="location.reload()">Play Again</button>`;
     }
-  }
-
-  function generateQuestion() {
-    questionCount++;
-    if (questionCount > totalQuestions) {
-      endQuiz();
-      return;
-    }
-
-    let maxNum = level * 10;
-    num1 = Math.floor(Math.random() * maxNum) + 1;
-    num2 = Math.floor(Math.random() * maxNum) + 1;
-
-    const operations = ['+', '-'];
-    if (level >= 4) operations.push('*');
-    if (level >= 6) operations.push('/');
-
-    const op = operations[Math.floor(Math.random() * operations.length)];
-
-    switch (op) {
-      case '+':
-        correctAnswer = num1 + num2;
-        break;
-      case '-':
-        if (num2 > num1) [num1, num2] = [num2, num1]; // prevent negatives
-        correctAnswer = num1 - num2;
-        break;
-      case '*':
-        correctAnswer = num1 * num2;
-        break;
-      case '/':
-        correctAnswer = parseFloat((num1 / num2).toFixed(2));
-        break;
-    }
-
-    document.getElementById('question').textContent =
-      `Question ${questionCount}: ${num1} ${op} ${num2} = ?`;
-    document.getElementById('answer').value = '';
-    document.getElementById('answer').focus();
-  }
-
-  function submitAnswer() {
-    const userAnswer = parseFloat(document.getElementById('answer').value);
-    if (isNaN(userAnswer)) return alert('Please enter a number.');
-    if (Math.abs(userAnswer - correctAnswer) < 0.01) score++;
-    generateQuestion();
-  }
-
-  function endQuiz() {
-    clearInterval(timer);
-    document.getElementById('quiz').style.display = 'none';
-    document.getElementById('result').style.display = 'block';
-    document.getElementById('result').innerHTML =
-      `<h2>Quiz Over!</h2><p>Your score: ${score}/${totalQuestions}</p>
-       <button onclick="location.reload()">Play Again</button>`;
-  }
-  </script></body>
+  </script>
+</body>
 </html>
