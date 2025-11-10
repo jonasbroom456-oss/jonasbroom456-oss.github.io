@@ -96,70 +96,88 @@ input[type="number"] {
 <div id="result" style="display:none;"></div>
 
   </div>  <script>
-    let level, num1, num2, correctAnswer, score = 0, totalQuestions = 5, questionCount = 0, timer;
-    let timeLeft = 30;
+  let level, num1, num2, correctAnswer, score = 0, totalQuestions = 5, questionCount = 0, timer;
+  let timeLeft = 30;
 
-    function startQuiz() {
-      level = parseInt(document.getElementById('level').value);
-      document.getElementById('setup').style.display = 'none';
-      document.getElementById('quiz').style.display = 'block';
-      score = 0;
-      questionCount = 0;
-      timeLeft = 30;
-      document.getElementById('time').textContent = timeLeft;
-      timer = setInterval(updateTimer, 1000);
-      generateQuestion();
-    }
+  function startQuiz() {
+    level = parseInt(document.getElementById('level').value);
+    document.getElementById('setup').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    score = 0;
+    questionCount = 0;
+    timeLeft = 30;
+    document.getElementById('time').textContent = timeLeft;
+    timer = setInterval(updateTimer, 1000);
+    generateQuestion();
 
-    function updateTimer() {
-      timeLeft--;
-      document.getElementById('time').textContent = timeLeft;
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        endQuiz();
-      }
-    }
+    // Let pressing Enter submit answers
+    document.getElementById('answer').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submitAnswer();
+    });
+  }
 
-    function generateQuestion() {
-      questionCount++;
-      if (questionCount > totalQuestions) {
-        endQuiz();
-        return;
-      }
-
-      let maxNum = level * 10;
-      num1 = Math.floor(Math.random() * maxNum) + 1;
-      num2 = Math.floor(Math.random() * maxNum) + 1;
-
-      const operations = ['+', '-'];
-      if (level >= 4) operations.push('*');
-      if (level >= 6) operations.push('/');
-
-      const op = operations[Math.floor(Math.random() * operations.length)];
-
-      switch (op) {
-        case '+': correctAnswer = num1 + num2; break;
-        case '-': correctAnswer = num1 - num2; break;
-        case '*': correctAnswer = num1 * num2; break;
-        case '/': correctAnswer = parseFloat((num1 / num2).toFixed(2)); break;
-      }
-
-      document.getElementById('question').textContent = `Question ${questionCount}: ${num1} ${op} ${num2} = ?`;
-      document.getElementById('answer').value = '';
-    }
-
-    function submitAnswer() {
-      const userAnswer = parseFloat(document.getElementById('answer').value);
-      if (isNaN(userAnswer)) return alert('Please enter a number.');
-      if (Math.abs(userAnswer - correctAnswer) < 0.01) score++;
-      generateQuestion();
-    }
-
-    function endQuiz() {
+  function updateTimer() {
+    timeLeft--;
+    document.getElementById('time').textContent = timeLeft;
+    if (timeLeft <= 0) {
       clearInterval(timer);
-      document.getElementById('quiz').style.display = 'none';
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('result').innerHTML = `<h2>Quiz Over!</h2><p>Your score: ${score}/${totalQuestions}</p><button onclick=\"location.reload()\">Play Again</button>`;
+      endQuiz();
     }
+  }
+
+  function generateQuestion() {
+    questionCount++;
+    if (questionCount > totalQuestions) {
+      endQuiz();
+      return;
+    }
+
+    let maxNum = level * 10;
+    num1 = Math.floor(Math.random() * maxNum) + 1;
+    num2 = Math.floor(Math.random() * maxNum) + 1;
+
+    const operations = ['+', '-'];
+    if (level >= 4) operations.push('*');
+    if (level >= 6) operations.push('/');
+
+    const op = operations[Math.floor(Math.random() * operations.length)];
+
+    switch (op) {
+      case '+':
+        correctAnswer = num1 + num2;
+        break;
+      case '-':
+        if (num2 > num1) [num1, num2] = [num2, num1]; // prevent negatives
+        correctAnswer = num1 - num2;
+        break;
+      case '*':
+        correctAnswer = num1 * num2;
+        break;
+      case '/':
+        correctAnswer = parseFloat((num1 / num2).toFixed(2));
+        break;
+    }
+
+    document.getElementById('question').textContent =
+      `Question ${questionCount}: ${num1} ${op} ${num2} = ?`;
+    document.getElementById('answer').value = '';
+    document.getElementById('answer').focus();
+  }
+
+  function submitAnswer() {
+    const userAnswer = parseFloat(document.getElementById('answer').value);
+    if (isNaN(userAnswer)) return alert('Please enter a number.');
+    if (Math.abs(userAnswer - correctAnswer) < 0.01) score++;
+    generateQuestion();
+  }
+
+  function endQuiz() {
+    clearInterval(timer);
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').innerHTML =
+      `<h2>Quiz Over!</h2><p>Your score: ${score}/${totalQuestions}</p>
+       <button onclick="location.reload()">Play Again</button>`;
+  }
   </script></body>
 </html>
