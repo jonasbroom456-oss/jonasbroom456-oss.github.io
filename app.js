@@ -1,8 +1,6 @@
-import { findFormula } from "./formulas.js";
+// import { findFormula } from "./formulas.js";
 import { evaluateExpression } from "./maths.js";
 import { processEnglish } from "./english.js";
-
-console.log("✅ app.js loaded successfully");
 
 const menuBtn = document.getElementById('menuBtn');
 const sideMenu = document.getElementById('sideMenu');
