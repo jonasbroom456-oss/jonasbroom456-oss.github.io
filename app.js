@@ -1,68 +1,51 @@
-// import { findFormula } from "./formulas.js";
 import { evaluateExpression } from "./maths.js";
+import { findFormula } from "./formulas.js";
 import { processEnglish } from "./english.js";
 
-const menuBtn = document.getElementById('menuBtn');
-const sideMenu = document.getElementById('sideMenu');
-const title = document.getElementById('title');
-const queryInput = document.getElementById('queryInput');
-const submitBtn = document.getElementById('submitBtn');
-const output = document.getElementById('output');
+const menuBtn = document.getElementById("menuBtn");
+const sideMenu = document.getElementById("sideMenu");
+const title = document.getElementById("title");
+const queryInput = document.getElementById("queryInput");
+const submitBtn = document.getElementById("submitBtn");
+const output = document.getElementById("output");
 
 let currentSubject = null;
 
-menuBtn.addEventListener('click', () => {
-  menuBtn.classList.toggle('menu-open');
-  sideMenu.classList.toggle('-translate-x-full');
-  console.log("menu toggled");
+menuBtn.addEventListener("click", () => {
+  menuBtn.classList.toggle("menu-open");
+  sideMenu.classList.toggle("-translate-x-full");
 });
 
-document.querySelectorAll('.subjectBtn').forEach(btn => {
-  btn.addEventListener('click', () => {
+document.querySelectorAll(".subjectBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
     currentSubject = btn.dataset.subject;
-    title.textContent =
-      currentSubject === 'math'
-        ? 'Maths Homework Companion'
-        : currentSubject === 'formulas'
-        ? 'Formulas Homework Companion'
-        : 'English Homework Companion';
-    menuBtn.classList.remove('menu-open');
-    sideMenu.classList.add('-translate-x-full');
-    console.log(`subject selected: ${currentSubject}`);
+
+    if (currentSubject === "math") title.textContent = "Maths Homework Companion";
+    if (currentSubject === "formulas") title.textContent = "Formulas Homework Companion";
+    if (currentSubject === "english") title.textContent = "English Homework Companion";
+
+    menuBtn.classList.remove("menu-open");
+    sideMenu.classList.add("-translate-x-full");
   });
 });
 
-submitBtn.addEventListener('click', () => {
-  if (!currentSubject) {
-    output.textContent = 'Please choose Maths, English, or Formulas first.';
-    return;
-  }
+submitBtn.addEventListener("click", () => {
+  const q = queryInput.value.trim();
+  if (!currentSubject) { output.textContent = "Please choose a subject first."; return; }
+  if (!q) { output.textContent = "Please type something."; return; }
 
-  const query = queryInput.value.trim();
-  if (!query) {
-    output.textContent = 'Please type a question first.';
-    return;
-  }
+  let result = "";
 
-  const result = runQuery(currentSubject, query);
+  if (currentSubject === "math") result = evaluateExpression(q);
+  else if (currentSubject === "formulas") {
+    const matches = findFormula(q);
+    result = matches.length ? matches.map(f => f.name + ": " + f.latex + " — " + f.description).join("\n") : "No matching formulas found.";
+  }
+  else if (currentSubject === "english") result = processEnglish(q);
+
   output.textContent = result;
-  console.log(`query submitted: ${query}`);
 });
 
-queryInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') submitBtn.click();
+queryInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") submitBtn.click();
 });
-
-function runQuery(subject, query) {
-  if (subject === "formulas") {
-    const matches = findFormula(query);
-    return Array.isArray(matches)
-      ? (matches.length
-          ? matches.map(f => `${f.name}: ${f.latex} — ${f.description}`).join("\n")
-          : "No matching formulas found.")
-      : matches;
-  }
-  if (subject === "math") return evaluateExpression(query);
-  if (subject === "english") return processEnglish(query);
-  return "Unknown subject.";
-}
